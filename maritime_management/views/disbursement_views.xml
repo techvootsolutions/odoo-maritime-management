@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="port_disbursement_view_list" model="ir.ui.view">
+        <field name="name">port.disbursement.account.list</field>
+        <field name="model">port.disbursement.account</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="port_call_id"/>
+                <field name="vessel_id"/>
+                <field name="port_id"/>
+                <field name="agent_id"/>
+                <field name="pda_amount"/>
+                <field name="fda_amount"/>
+                <field name="variance_percent"/>
+                <field name="state" widget="badge"
+                       decoration-info="state in ('draft', 'pda_submitted')"
+                       decoration-success="state == 'pda_approved'"
+                       decoration-warning="state == 'fda_submitted'"
+                       decoration-muted="state in ('matched', 'paid', 'cancelled')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="port_disbursement_view_form" model="ir.ui.view">
+        <field name="name">port.disbursement.account.form</field>
+        <field name="model">port.disbursement.account</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit_pda" string="Submit PDA" type="object"
+                            help="Submit Proforma Disbursement Account — send estimated port costs to shore office for approval."
+                            invisible="state != 'draft'" class="btn-primary"/>
+                    <button name="action_approve_pda" string="Approve PDA" type="object"
+                            help="Approve Proforma Disbursement Account — release spending authority to the port agent."
+                            invisible="state != 'pda_submitted'" class="btn-primary"
+                            groups="maritime_management.group_maritime_finance,maritime_management.group_maritime_superintendent"/>
+                    <button name="action_submit_fda" string="Submit FDA" type="object"
+                            help="Submit Final Disbursement Account — send actual port costs after vessel departure."
+                            invisible="state != 'pda_approved'"
+                            groups="maritime_management.group_maritime_agent,maritime_management.group_maritime_superintendent"/>
+                    <button name="action_mark_matched" string="3-Way Matched" type="object"
+                            invisible="state != 'fda_submitted'"
+                            groups="maritime_management.group_maritime_finance"/>
+                    <button name="action_mark_paid" string="Mark Paid" type="object"
+                            invisible="state != 'matched'"
+                            groups="maritime_management.group_maritime_finance"/>
+                    <button name="action_create_purchase_order" string="Create Purchase Order" type="object"
+                            groups="purchase.group_purchase_user"
+                            invisible="state != 'pda_approved' or purchase_order_count &gt; 0" class="btn-primary"
+                            help="Create a Purchase Order for this port call once Proforma Disbursement Account (PDA) budget is approved."/>
+                    <button name="action_create_vendor_bill" string="Create Vendor Bill" type="object"
+                            groups="account.group_account_invoice"
+                            invisible="state in ('draft', 'cancelled') or bill_count &gt; 0" class="btn-secondary"/>
+                    <button name="action_cancel" string="Cancel" type="object"
+                            invisible="state in ('paid', 'cancelled')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,pda_submitted,pda_approved,fda_submitted,matched,paid"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <field name="purchase_order_count" invisible="1"/>
+                        <button name="action_view_purchase_orders" type="object"
+                                groups="purchase.group_purchase_user"
+                                class="oe_stat_button" icon="fa-shopping-cart"
+                                invisible="purchase_order_count == 0">
+                            <div class="o_field_statinfo">
+                                <span class="o_stat_value"><field name="purchase_order_count"/></span>
+                                <span class="o_stat_text">Purchase Orders</span>
+                            </div>
+                        </button>
+                        <field name="bill_count" invisible="1"/>
+                        <button name="action_view_vendor_bills" type="object"
+                                groups="account.group_account_invoice,account.group_account_readonly"
+                                class="oe_stat_button" icon="fa-file-text-o"
+                                invisible="bill_count == 0">
+                            <div class="o_field_statinfo">
+                                <span class="o_stat_value"><field name="bill_count"/></span>
+                                <span class="o_stat_text">Vendor Bills</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"
+                            help="Disbursement Account (DA) reference for this port call."/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="port_call_id"/>
+                            <field name="vessel_id"/>
+                            <field name="port_id"/>
+                            <field name="agent_id"/>
+                        </group>
+                        <group>
+                            <field name="currency_id"/>
+                            <field name="pda_amount"
+                                   help="Proforma Disbursement Account (PDA) — estimated port costs approved before the agent purchases."/>
+                            <field name="fda_amount"
+                                   help="Final Disbursement Account (FDA) — actual port costs after the vessel has departed."/>
+                            <field name="variance_amount"
+                                   help="Difference between FDA (actual) and PDA (estimate)."/>
+                            <field name="variance_percent"
+                                   help="Variance as a percentage of the PDA (Proforma Disbursement Account) estimate."/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="PDA / FDA Lines" name="lines"
+                              help="PDA = Proforma Disbursement Account (estimate). FDA = Final Disbursement Account (actual).">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="line_type"
+                                           help="PDA = Proforma Disbursement Account (estimate). FDA = Final Disbursement Account (actual)."/>
+                                    <field name="charge_category"/>
+                                    <field name="name"/>
+                                    <field name="purchase_order_id" optional="show"
+                                           groups="purchase.group_purchase_user"
+                                           domain="[('port_call_id', '=', parent.port_call_id)]"
+                                           help="Purchase Order (PO) linked to this line."/>
+                                    <field name="bill_id" optional="show"
+                                           groups="account.group_account_invoice,account.group_account_readonly"
+                                           domain="[('port_call_id', '=', parent.port_call_id), ('move_type', '=', 'in_invoice')]"/>
+                                    <field name="amount" sum="Total"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Linked Documents" name="documents">
+                            <group>
+                                <field name="purchase_order_ids" widget="many2many_tags" groups="purchase.group_purchase_user"/>
+                                <field name="bill_ids" widget="many2many_tags" groups="account.group_account_invoice,account.group_account_readonly"/>
+                            </group>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="port_disbursement_action" model="ir.actions.act_window">
+        <field name="name">Disbursement Accounts</field>
+        <field name="res_model">port.disbursement.account</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="disbursement_view_search_demo" model="ir.ui.view">
+        <field name="name">port.disbursement.account.search.demo</field>
+        <field name="model">port.disbursement.account</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="port_call_id"/>
+                <field name="vessel_id"/>
+                <field name="agent_id"/>
+                <filter string="Approve Budget (PDA)" name="filter_pda"
+                        domain="[('state', '=', 'pda_submitted')]"/>
+                <filter string="Review Final Bill (FDA)" name="filter_fda"
+                        domain="[('state', '=', 'fda_submitted')]"/>
+                <filter string="Ready to Pay" name="filter_matched"
+                        domain="[('state', '=', 'matched')]"/>
+                <filter string="Paid" name="filter_paid"
+                        domain="[('state', '=', 'paid')]"/>
+                <group>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Port" name="group_port" context="{'group_by': 'port_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="port_disbursement_view_list_control_center" model="ir.ui.view">
+        <field name="name">port.disbursement.account.list.demo</field>
+        <field name="model">port.disbursement.account</field>
+        <field name="inherit_id" ref="port_disbursement_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='variance_percent']" position="after">
+                <field name="variance_amount" string="Variance Amount" optional="show"
+                       help="Difference between FDA (Final Disbursement Account) and PDA (Proforma Disbursement Account)."/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

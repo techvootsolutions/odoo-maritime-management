@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_port_disbursement" model="ir.actions.report">
+        <field name="name">Disbursement Account</field>
+        <field name="model">port.disbursement.account</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">maritime_management.report_disbursement_document</field>
+        <field name="report_file">maritime_management.report_disbursement_document</field>
+        <field name="print_report_name">'DA - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_port_disbursement_account"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_disbursement_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Disbursement Account <span t-field="doc.name"/></h2>
+                        <p>
+                            <strong>Port Call:</strong> <span t-field="doc.port_call_id.name"/>
+                            | <strong>Vessel:</strong> <span t-field="doc.vessel_id.name"/>
+                            | <strong>Port:</strong> <span t-field="doc.port_id.name"/>
+                        </p>
+                        <p>
+                            <strong>Agent:</strong> <span t-field="doc.agent_id.name"/>
+                            | <strong>Status:</strong> <span t-field="doc.state"/>
+                        </p>
+                        <h4>PDA Estimate Lines</h4>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Category</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="doc.line_ids.filtered(lambda l: l.line_type == 'pda')" t-as="line">
+                                    <td><span t-field="line.name"/></td>
+                                    <td><span t-field="line.charge_category"/></td>
+                                    <td class="text-end"><span t-field="line.amount"/></td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="2">PDA Total</th>
+                                    <th class="text-end"><span t-field="doc.pda_amount"/></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <h4>FDA Actual Lines</h4>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Category</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="doc.line_ids.filtered(lambda l: l.line_type == 'fda')" t-as="line">
+                                    <td><span t-field="line.name"/></td>
+                                    <td><span t-field="line.charge_category"/></td>
+                                    <td class="text-end"><span t-field="line.amount"/></td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="2">FDA Total</th>
+                                    <th class="text-end"><span t-field="doc.fda_amount"/></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="2">Variance</th>
+                                    <th class="text-end">
+                                        <span t-field="doc.variance_amount"/>
+                                        (<span t-field="doc.variance_percent"/>%)
+                                    </th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

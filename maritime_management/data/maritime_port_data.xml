@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="port_hong_kong" model="maritime.port">
+        <field name="name">Hong Kong</field>
+        <field name="code">HKHKG</field>
+        <field name="country_id" ref="base.hk"/>
+        <field name="city">Hong Kong</field>
+    </record>
+    <record id="port_piraeus" model="maritime.port">
+        <field name="name">Piraeus</field>
+        <field name="code">GRPIR</field>
+        <field name="country_id" ref="base.gr"/>
+        <field name="city">Piraeus</field>
+    </record>
+    <record id="port_singapore" model="maritime.port">
+        <field name="name">Singapore</field>
+        <field name="code">SGSIN</field>
+        <field name="country_id" ref="base.sg"/>
+        <field name="city">Singapore</field>
+    </record>
+    <record id="port_antwerp" model="maritime.port">
+        <field name="name">Port of Antwerp-Bruges</field>
+        <field name="code">BEANR</field>
+        <field name="country_id" ref="base.be"/>
+        <field name="latitude">51.219444</field>
+        <field name="longitude">4.402500</field>
+        <field name="timezone">Europe/Brussels</field>
+    </record>
+    <record id="port_rotterdam" model="maritime.port">
+        <field name="name">Port of Rotterdam</field>
+        <field name="code">NLRTM</field>
+        <field name="country_id" ref="base.nl"/>
+        <field name="latitude">51.924420</field>
+        <field name="longitude">4.477733</field>
+        <field name="timezone">Europe/Amsterdam</field>
+    </record>
+</odoo>

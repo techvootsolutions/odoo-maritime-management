@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="vessel_alpha" model="maintenance.equipment">
+        <field name="name">MV Seatribute Alpha</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="is_vessel">True</field>
+        <field name="vessel_type">bulk</field>
+        <field name="imo_number">9123456</field>
+        <field name="serial_no">ALPHA-2019</field>
+        <field name="model">Handysize Bulk Carrier (32k DWT)</field>
+        <field name="flag_country_id" ref="base.gr"/>
+        <field name="category_id" ref="vessel_equipment_category"/>
+        <field name="maintenance_team_id" ref="vessel_maintenance_team"/>
+        <field name="owner_user_id" ref="user_demo_superintendent"/>
+        <field name="technician_user_id" ref="user_demo_superintendent"/>
+        <field name="analytic_account_id" ref="analytic_account_vessel_alpha"/>
+        <field name="assign_date">2024-03-01</field>
+        <field name="cost">18500000</field>
+        <field name="note"><![CDATA[
+            <p><b>MV Seatribute Alpha</b> — Handysize dry bulk carrier under Sea Tribute technical management.</p>
+            <ul>
+                <li>DWT: 32,500 MT · LOA: 179 m · Built: 2019</li>
+                <li>Main engine: MAN B&amp;W 6S50MC-C</li>
+                <li>Trading: Asia-Pacific grain &amp; minor bulk</li>
+            </ul>
+        ]]></field>
+    </record>
+    <record id="vessel_beta" model="maintenance.equipment">
+        <field name="name">MV Seatribute Beta</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="is_vessel">True</field>
+        <field name="vessel_type">bulk</field>
+        <field name="imo_number">9234567</field>
+        <field name="serial_no">BETA-2018</field>
+        <field name="model">Handysize Bulk Carrier (28k DWT)</field>
+        <field name="flag_country_id" ref="base.gr"/>
+        <field name="category_id" ref="vessel_equipment_category"/>
+        <field name="maintenance_team_id" ref="vessel_maintenance_team"/>
+        <field name="owner_user_id" ref="user_demo_superintendent"/>
+        <field name="technician_user_id" ref="user_demo_superintendent"/>
+        <field name="analytic_account_id" ref="analytic_account_vessel_beta"/>
+        <field name="assign_date">2023-06-15</field>
+        <field name="cost">16200000</field>
+        <field name="note"><![CDATA[
+            <p><b>MV Seatribute Beta</b> — Sister-class handysize, often paired with Alpha in Hong Kong.</p>
+            <ul>
+                <li>DWT: 28,200 MT · LOA: 172 m · Built: 2018</li>
+                <li>Main engine: Wärtsilä 6L46</li>
+                <li>Trading: Intra-Asia coal &amp; cement</li>
+            </ul>
+        ]]></field>
+    </record>
+    <record id="vessel_gamma" model="maintenance.equipment">
+        <field name="name">MV Seatribute Gamma</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="is_vessel">True</field>
+        <field name="vessel_type">bulk</field>
+        <field name="imo_number">9345678</field>
+        <field name="serial_no">GAMMA-2016</field>
+        <field name="model">Panamax Bulk Carrier (75k DWT)</field>
+        <field name="flag_country_id" ref="base.mh"/>
+        <field name="category_id" ref="vessel_equipment_category"/>
+        <field name="maintenance_team_id" ref="vessel_maintenance_team"/>
+        <field name="owner_user_id" ref="user_demo_superintendent"/>
+        <field name="technician_user_id" ref="user_demo_superintendent"/>
+        <field name="analytic_account_id" ref="analytic_account_vessel_gamma"/>
+        <field name="assign_date">2022-01-10</field>
+        <field name="cost">24800000</field>
+        <field name="note"><![CDATA[
+            <p><b>MV Seatribute Gamma</b> — Panamax on long-haul grain routes, regular Piraeus calls.</p>
+            <ul>
+                <li>DWT: 75,800 MT · LOA: 225 m · Built: 2016</li>
+                <li>Main engine: MAN B&amp;W 6S60MC-C</li>
+                <li>Flag: Marshall Islands</li>
+            </ul>
+        ]]></field>
+    </record>
+    <record id="vessel_delta" model="maintenance.equipment">
+        <field name="name">MV Seatribute Delta</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="is_vessel">True</field>
+        <field name="vessel_type">bulk</field>
+        <field name="imo_number">9456789</field>
+        <field name="serial_no">DELTA-2015</field>
+        <field name="model">Supramax Bulk Carrier (58k DWT)</field>
+        <field name="flag_country_id" ref="base.sg"/>
+        <field name="category_id" ref="vessel_equipment_category"/>
+        <field name="maintenance_team_id" ref="vessel_maintenance_team"/>
+        <field name="owner_user_id" ref="user_demo_superintendent"/>
+        <field name="technician_user_id" ref="user_demo_superintendent"/>
+        <field name="analytic_account_id" ref="analytic_account_vessel_delta"/>
+        <field name="assign_date">2021-09-01</field>
+        <field name="cost">22100000</field>
+        <field name="note"><![CDATA[
+            <p><b>MV Seatribute Delta</b> — Supramax with strong Singapore / Straits trading history.</p>
+            <ul>
+                <li>DWT: 58,400 MT · LOA: 199 m · Built: 2015</li>
+                <li>Main engine: MAN B&amp;W 5S50MC-C</li>
+                <li>Recent job: turbocharger bearing replacement (completed)</li>
+            </ul>
+        ]]></field>
+    </record>
+    <record id="vessel_epsilon" model="maintenance.equipment">
+        <field name="name">MV Seatribute Epsilon</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="is_vessel">True</field>
+        <field name="vessel_type">bulk</field>
+        <field name="imo_number">9567890</field>
+        <field name="serial_no">EPSILON-2017</field>
+        <field name="model">Ultramax Bulk Carrier (62k DWT)</field>
+        <field name="flag_country_id" ref="base.gr"/>
+        <field name="category_id" ref="vessel_equipment_category"/>
+        <field name="maintenance_team_id" ref="vessel_maintenance_team"/>
+        <field name="owner_user_id" ref="user_demo_superintendent"/>
+        <field name="technician_user_id" ref="user_demo_superintendent"/>
+        <field name="analytic_account_id" ref="analytic_account_vessel_epsilon"/>
+        <field name="assign_date">2022-11-20</field>
+        <field name="cost">23500000</field>
+        <field name="note"><![CDATA[
+            <p><b>MV Seatribute Epsilon</b> — Modern ultramax with eco-speed profile.</p>
+            <ul>
+                <li>DWT: 62,100 MT · LOA: 199 m · Built: 2017</li>
+                <li>Main engine: Wärtsilä 5RT-flex50</li>
+                <li>Trading: Mediterranean / Black Sea</li>
+            </ul>
+        ]]></field>
+    </record>
+</odoo>

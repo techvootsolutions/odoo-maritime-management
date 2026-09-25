@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Extra MRs to populate dashboard pipeline, risk, and KPI tiles -->
+    <record id="mr_alpha_draft" model="maintenance.request">
+        <field name="name">Steering gear hydraulic hose inspection</field>
+        <field name="equipment_id" ref="vessel_alpha"/>
+        <field name="maintenance_type">preventive</field>
+        <field name="priority">1</field>
+        <field name="criticality">desirable</field>
+        <field name="port_call_id" ref="port_call_alpha_mumbai"/>
+        <field name="shore_state">draft</field>
+    </record>
+
+    <record id="mr_beta_generator" model="maintenance.request">
+        <field name="name">Emergency generator fuel pump seal</field>
+        <field name="equipment_id" ref="vessel_beta"/>
+        <field name="maintenance_type">corrective</field>
+        <field name="priority">3</field>
+        <field name="criticality">vital</field>
+        <field name="part_number">SP-GEN-FP-02</field>
+        <field name="port_call_id" ref="port_call_beta_mumbai"/>
+        <field name="shore_state">approved</field>
+    </record>
+
+    <record id="mr_gamma_purifier" model="maintenance.request">
+        <field name="name">Fuel oil purifier bowl gasket</field>
+        <field name="equipment_id" ref="vessel_gamma"/>
+        <field name="maintenance_type">corrective</field>
+        <field name="priority">3</field>
+        <field name="criticality">vital</field>
+        <field name="part_number">SP-FO-PUR-07</field>
+        <field name="port_call_id" ref="port_call_gamma_piraeus"/>
+        <field name="shore_state">approved</field>
+    </record>
+
+    <record id="mr_gamma_draft" model="maintenance.request">
+        <field name="name">Deck crane wire rope inspection</field>
+        <field name="equipment_id" ref="vessel_gamma"/>
+        <field name="maintenance_type">preventive</field>
+        <field name="priority">1</field>
+        <field name="criticality">desirable</field>
+        <field name="port_call_id" ref="port_call_gamma_piraeus"/>
+        <field name="shore_state">draft</field>
+    </record>
+
+    <record id="mr_gamma_submitted_urgent" model="maintenance.request">
+        <field name="name">Main air compressor motor bearings</field>
+        <field name="equipment_id" ref="vessel_gamma"/>
+        <field name="maintenance_type">corrective</field>
+        <field name="priority">3</field>
+        <field name="criticality">essential</field>
+        <field name="part_number">SP-AIR-MOT-12</field>
+        <field name="port_call_id" ref="port_call_gamma_piraeus"/>
+        <field name="shore_state">submitted</field>
+    </record>
+</odoo>

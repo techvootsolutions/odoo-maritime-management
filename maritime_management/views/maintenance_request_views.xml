@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="maintenance_request_view_form_maritime" model="ir.ui.view">
+        <field name="name">maintenance.request.form.maritime</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='stage_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='kanban_state']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='archive_equipment_request']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <field name="is_maritime_job" invisible="1"/>
+                <button name="action_submit_shore" string="Submit to Shore" type="object"
+                        invisible="shore_state != 'draft'" class="btn-primary"/>
+                <button name="action_approve_shore" string="Approve Requisition" type="object"
+                        invisible="shore_state != 'submitted'" class="btn-primary"
+                        groups="maritime_management.group_maritime_superintendent,base.group_system"/>
+                <button name="action_mark_delivered" string="Delivered Onboard" type="object"
+                        invisible="shore_state != 'approved'" class="btn-primary"/>
+                <button name="action_shore_done" string="Complete Job (Done)" type="object"
+                        help="Close this Maintenance Request (MR) — job completed onboard."
+                        invisible="shore_state != 'delivered'" class="btn-primary"/>
+                <button name="action_shore_cancel" string="Cancel" type="object"
+                        invisible="shore_state in ('done', 'cancelled')"/>
+                <field name="shore_state" widget="statusbar"
+                       statusbar_visible="draft,submitted,approved,delivered,done"
+                       help="Requisition status from onboard request to shore approval and final job completion."/>
+            </xpath>
+            <xpath expr="//div[hasclass('oe_title')]" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_view_purchase_orders" type="object"
+                            groups="purchase.group_purchase_user"
+                            class="oe_stat_button" icon="fa-shopping-cart"
+                            invisible="purchase_order_count == 0">
+                        <div class="o_field_statinfo">
+                            <span class="o_stat_value"><field name="purchase_order_count"/></span>
+                            <span class="o_stat_text">Purchase Orders</span>
+                        </div>
+                    </button>
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='priority']" position="after">
+                <field name="criticality"
+                       help="VITAL = must have before sailing; ESSENTIAL = needed soon; DESIRABLE = optional."/>
+                <field name="part_number"/>
+                <field name="maker_ref"/>
+                <field name="required_by_date"
+                       help="Required delivery date — align with Port ETA (Estimated Time of Arrival)."/>
+                <field name="port_call_id"
+                       help="Port visit where the agent will procure and deliver these parts."/>
+                <field name="procurement_status"
+                       help="RFQ = Request for Quotation sent to vendors."/>
+                <field name="purchase_amount"/>
+                <field name="currency_id" invisible="1"/>
+            </xpath>
+            <xpath expr="//notebook/page[1]" position="before">
+                <page string="Spare Parts" name="spare_parts">
+                    <field name="part_line_ids">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="product_id" string="Product / Spare Part"/>
+                            <field name="name" string="Description"/>
+                            <field name="part_number" optional="hide"/>
+                            <field name="maker_ref" optional="hide"/>
+                            <field name="quantity"/>
+                            <field name="uom_name"/>
+                            <field name="criticality"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="maintenance_request_view_form_stock" model="ir.ui.view">
+        <field name="name">maintenance.request.form.stock</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance_request_view_form_maritime"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='action_mark_delivered']" position="before">
+                <button name="action_check_availability" string="Check Availability" type="object"
+                        class="btn-primary"
+                        invisible="not is_maritime_job or shore_state != 'approved' or stock_consumption_state == 'done'"
+                        groups="stock.group_stock_user"
+                        help="Check vessel stores and consume components for this maintenance job."/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_consumption_pickings" type="object"
+                        class="oe_stat_button" icon="fa-truck"
+                        invisible="consumption_picking_count == 0"
+                        groups="stock.group_stock_user">
+                    <div class="o_field_statinfo">
+                        <span class="o_stat_value"><field name="consumption_picking_count"/></span>
+                        <span class="o_stat_text">Consumptions</span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='procurement_status']" position="after">
+                <field name="stock_location_id" readonly="1" groups="stock.group_stock_user"/>
+                <field name="stock_consumption_state" groups="stock.group_stock_user"/>
+                <field name="consumption_picking_count" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='part_line_ids']/list/field[@name='uom_name']" position="after">
+                <field name="qty_available" optional="hide" groups="stock.group_stock_user"/>
+                <field name="qty_consumed" optional="hide" groups="stock.group_stock_user"/>
+                <field name="qty_remaining" optional="hide" groups="stock.group_stock_user"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="maintenance_request_view_list_maritime" model="ir.ui.view">
+        <field name="name">maintenance.request.list.maritime</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='stage_id']" position="attributes">
+                <attribute name="column_invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="shore_state" string="Status" optional="show"/>
+                <field name="criticality" optional="show"/>
+                <field name="port_call_id" optional="show"/>
+                <field name="procurement_status" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="maintenance_request_view_kanban_maritime" model="ir.ui.view">
+        <field name="name">maintenance.request.kanban.maritime</field>
+        <field name="model">maintenance.request</field>
+        <field name="priority">5</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="shore_state" class="o_kanban_mobile">
+                <field name="shore_state"/>
+                <field name="archive"/>
+                <field name="equipment_id"/>
+                <field name="port_call_id"/>
+                <field name="criticality"/>
+                <field name="procurement_status"/>
+                <field name="priority"/>
+                <field name="color"/>
+                <field name="user_id"/>
+                <field name="activity_ids"/>
+                <templates>
+                    <t t-name="card">
+                        <field name="name" class="fw-bold fs-5"/>
+                        <div class="text-muted">
+                            <field name="equipment_id"/>
+                        </div>
+                        <div t-if="record.port_call_id.raw_value">
+                            Port: <field name="port_call_id"/>
+                        </div>
+                        <div>
+                            <field name="criticality" widget="badge"
+                                   decoration-danger="criticality == 'vital'"
+                                   decoration-warning="criticality == 'essential'"/>
+                            <field name="procurement_status" widget="badge" class="ms-1"/>
+                        </div>
+                        <footer>
+                            <div class="d-flex">
+                                <field name="priority" widget="priority"/>
+                                <field name="activity_ids" widget="kanban_activity" class="ms-3"/>
+                            </div>
+                            <div class="d-flex ms-auto align-items-center">
+                                <field name="user_id" widget="many2one_avatar_user" class="ms-1"/>
+                            </div>
+                        </footer>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="maintenance_request_view_search_maritime" model="ir.ui.view">
+        <field name="name">maintenance.request.search.maritime</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_search"/>
+        <field name="priority">5</field>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='active']" position="after">
+                <filter string="Port Call Jobs" name="maritime_port_calls"
+                        domain="[('port_call_id', '!=', False)]"/>
+            </xpath>
+            <xpath expr="//filter[@name='stages']" position="after">
+                <filter string="Status" name="group_shore_state"
+                        context="{'group_by': 'shore_state'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="maintenance_request_maritime_action" model="ir.actions.act_window">
+        <field name="name">Maintenance Requests</field>
+        <field name="res_model">maintenance.request</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="maintenance.hr_equipment_request_view_search"/>
+        <field name="context">{
+            'search_default_active': True,
+            'search_default_maritime_port_calls': True,
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a maintenance request for vessel spare parts
+            </p>
+            <p>
+                Track shore approval, agent procurement, and delivery per port call.
+                Kanban columns follow the single Status field. Drag cards to advance the job.
+            </p>
+        </field>
+    </record>
+
+    <record id="maintenance_request_action_view_list" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="maintenance_request_view_list_maritime"/>
+        <field name="act_window_id" ref="maintenance_request_maritime_action"/>
+    </record>
+
+    <record id="maintenance_request_action_view_kanban" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="maintenance_request_view_kanban_maritime"/>
+        <field name="act_window_id" ref="maintenance_request_maritime_action"/>
+    </record>
+
+    <record id="maintenance_request_action_view_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="3"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="maintenance.hr_equipment_request_view_form"/>
+        <field name="act_window_id" ref="maintenance_request_maritime_action"/>
+    </record>
+
+    <record id="maintenance_request_view_search_demo" model="ir.ui.view">
+        <field name="name">maintenance.request.search.demo</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter string="Waiting for My Approval" name="filter_submitted"
+                        domain="[('shore_state', '=', 'submitted')]"/>
+                <filter string="Agent Still Buying (RFQ)" name="filter_procurement"
+                        domain="[('shore_state', 'in', ('assigned', 'approved')), ('procurement_status', 'in', ('none', 'rfq'))]"/>
+                <filter string="Delivered to Ship" name="filter_delivered"
+                        domain="[('shore_state', '=', 'delivered')]"/>
+                <filter string="Completed" name="filter_done"
+                        domain="[('shore_state', '=', 'done')]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

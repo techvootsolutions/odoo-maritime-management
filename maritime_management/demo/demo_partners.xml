@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="partner_agent_mumbai" model="res.partner">
+        <field name="name">Hong Kong Maritime Services</field>
+        <field name="company_type">company</field>
+        <field name="maritime_role">port_agent</field>
+        <field name="maritime_port_ids" eval="[(4, ref('port_hong_kong'))]"/>
+        <field name="street">Central Plaza, 18 Harbour Road</field>
+        <field name="city">Hong Kong</field>
+        <field name="country_id" ref="base.hk"/>
+        <field name="email">ops@hkmaritime.demo</field>
+    </record>
+
+    <record id="partner_chandler_mumbai_a" model="res.partner">
+        <field name="name">Harbour Marine Supplies Ltd</field>
+        <field name="company_type">company</field>
+        <field name="maritime_role">ship_chandler</field>
+        <field name="maritime_port_ids" eval="[(4, ref('port_hong_kong'))]"/>
+        <field name="city">Hong Kong</field>
+        <field name="country_id" ref="base.hk"/>
+    </record>
+
+    <record id="partner_chandler_mumbai_b" model="res.partner">
+        <field name="name">Victoria Harbour Ship Chandlers</field>
+        <field name="company_type">company</field>
+        <field name="maritime_role">ship_chandler</field>
+        <field name="maritime_port_ids" eval="[(4, ref('port_hong_kong'))]"/>
+        <field name="city">Hong Kong</field>
+        <field name="country_id" ref="base.hk"/>
+    </record>
+
+    <record id="partner_agent_piraeus" model="res.partner">
+        <field name="name">Piraeus Ship Agency SA</field>
+        <field name="company_type">company</field>
+        <field name="maritime_role">port_agent</field>
+        <field name="maritime_port_ids" eval="[(4, ref('port_piraeus'))]"/>
+        <field name="street">33 Akti Miaouli Str.</field>
+        <field name="city">Piraeus</field>
+        <field name="country_id" ref="base.gr"/>
+        <field name="email">agency@piraeusship.demo</field>
+    </record>
+
+    <record id="partner_agent_singapore" model="res.partner">
+        <field name="name">Singapore Maritime Agency Pte Ltd</field>
+        <field name="company_type">company</field>
+        <field name="maritime_role">port_agent</field>
+        <field name="maritime_port_ids" eval="[(4, ref('port_singapore'))]"/>
+        <field name="city">Singapore</field>
+        <field name="country_id" ref="base.sg"/>
+        <field name="email">ops@singmaragency.demo</field>
+    </record>
+
+    <record id="partner_chandler_singapore" model="res.partner">
+        <field name="name">Asia Pacific Marine Supplies</field>
+        <field name="company_type">company</field>
+        <field name="maritime_role">ship_chandler</field>
+        <field name="maritime_port_ids" eval="[(4, ref('port_singapore'))]"/>
+        <field name="city">Singapore</field>
+        <field name="country_id" ref="base.sg"/>
+    </record>
+
+    <record id="partner_chandler_mumbai_c" model="res.partner">
+        <field name="name">Kowloon Marine Stores Co.</field>
+        <field name="company_type">company</field>
+        <field name="maritime_role">ship_chandler</field>
+        <field name="maritime_port_ids" eval="[(4, ref('port_hong_kong'))]"/>
+        <field name="city">Hong Kong</field>
+        <field name="country_id" ref="base.hk"/>
+    </record>
+</odoo>

@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="maritime_management.ControlCenterDashboard">
+    <div t-attf-class="{{props.className}} o_mcc_root">
+    <Layout display="display" className="'o_mcc_scroll_area'">
+        <t t-set-slot="control-panel-navigation-additional">
+            <div class="o_mcc_filters d-flex flex-wrap gap-2 align-items-center">
+                <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-secondary"
+                            t-att-class="{'active': state.scope === 'live'}"
+                            t-on-click="() => this.setScope('live')">Live</button>
+                    <button type="button" class="btn btn-secondary"
+                            t-att-class="{'active': state.scope === 'month'}"
+                            t-on-click="() => this.setScope('month')">This month</button>
+                    <button type="button" class="btn btn-secondary"
+                            t-att-class="{'active': state.scope === 'all'}"
+                            t-on-click="() => this.setScope('all')">All fleet</button>
+                </div>
+                <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-outline-primary"
+                            t-att-class="{'active': state.role === 'superintendent'}"
+                            t-on-click="() => this.setRole('superintendent')">Superintendent</button>
+                    <button type="button" class="btn btn-outline-primary"
+                            t-att-class="{'active': state.role === 'finance'}"
+                            t-on-click="() => this.setRole('finance')">Finance</button>
+                </div>
+                <button type="button" class="btn btn-sm btn-link" t-on-click="openPortCallsList">
+                    All port calls
+                </button>
+            </div>
+        </t>
+        <div class="o_mcc_dashboard container-fluid py-3">
+            <t t-if="state.loading">
+                <div class="o_mcc_loading text-center py-5">
+                    <i class="fa fa-spinner fa-spin fa-2x text-muted"/>
+                    <p class="text-muted mt-2">Loading control center…</p>
+                </div>
+            </t>
+            <t t-elif="state.data">
+                <div class="o_mcc_header mb-4">
+                    <h2 class="o_mcc_title mb-1">Sea Tribute Control Center</h2>
+                    <p class="text-muted mb-0">
+                        <t t-if="state.role === 'finance'">Finance overview — budgets, final bills, and variances</t>
+                        <t t-else="">Superintendent cockpit — approvals, port calls, and agent activity</t>
+                    </p>
+                </div>
+
+                <!-- KPI tiles -->
+                <div class="row g-3 mb-4">
+                    <t t-foreach="state.data.kpis" t-as="kpi" t-key="kpi.key">
+                        <div class="col-6 col-md-4 col-xl-2">
+                            <div t-attf-class="o_mcc_kpi o_mcc_kpi_#{kpi.tone}"
+                                 t-on-click="() => this.openAction(kpi.action_xmlid)">
+                                <div class="o_mcc_kpi_value" t-esc="kpi.value"/>
+                                <div class="o_mcc_kpi_label" t-esc="kpi.label"/>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+
+                <!-- Fleet strip -->
+                <div class="o_mcc_panel mb-4">
+                    <div class="o_mcc_panel_header">Fleet overview</div>
+                    <div class="o_mcc_fleet_strip">
+                        <t t-foreach="state.data.fleet_strip" t-as="vessel" t-key="vessel.id">
+                            <div t-attf-class="o_mcc_fleet_card o_mcc_fleet_#{vessel.status}"
+                                 t-on-click="() => this.openRecord('port.call', vessel.port_call_id)">
+                                <div class="o_mcc_fleet_name" t-esc="vessel.name"/>
+                                <div class="o_mcc_fleet_detail" t-esc="vessel.detail"/>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- Arriving this week -->
+                <div class="o_mcc_panel mb-4" t-if="state.data.upcoming_arrivals and state.data.upcoming_arrivals.length">
+                    <div class="o_mcc_panel_header">Arriving this week</div>
+                    <div class="o_mcc_fleet_strip">
+                        <t t-foreach="state.data.upcoming_arrivals" t-as="arrival" t-key="arrival.id">
+                            <div class="o_mcc_fleet_card o_mcc_fleet_planned o_mcc_arrival_card"
+                                 t-on-click="() => this.openRecord('port.call', arrival.id)">
+                                <div class="o_mcc_fleet_name" t-esc="arrival.vessel"/>
+                                <div class="o_mcc_fleet_detail" t-esc="arrival.port"/>
+                                <div class="o_mcc_arrival_eta">
+                                    <span class="badge text-bg-primary" t-esc="arrival.eta_label"/>
+                                    <span class="small text-muted ms-1" t-esc="arrival.eta"/>
+                                </div>
+                                <div class="o_mcc_fleet_detail mt-1" t-esc="arrival.summary"/>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <!-- Action queue -->
+                    <div class="col-lg-5">
+                        <div class="o_mcc_panel h-100">
+                            <div class="o_mcc_panel_header">
+                                <t t-if="state.role === 'finance'">Finance action queue</t>
+                                <t t-else="">My action queue</t>
+                            </div>
+                            <t t-if="!state.data.action_queue.length">
+                                <p class="text-muted px-3 pb-3 mb-0">Nothing needs your attention right now.</p>
+                            </t>
+                            <t t-else="">
+                                <t t-foreach="state.data.action_queue" t-as="item" t-key="item.id + item.model">
+                                    <div t-attf-class="o_mcc_queue_item o_mcc_tone_#{item.tone}"
+                                         t-on-click="() => this.openRecord(item.model, item.id)">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <div class="fw-semibold" t-esc="item.title"/>
+                                                <div class="small text-muted" t-esc="item.subtitle"/>
+                                                <div class="small mt-1" t-esc="item.reason"/>
+                                            </div>
+                                            <span t-if="item.badge" class="badge rounded-pill text-bg-danger"
+                                                  t-esc="item.badge"/>
+                                        </div>
+                                        <span class="o_mcc_link small" t-esc="item.action_label"/>
+                                    </div>
+                                </t>
+                            </t>
+                        </div>
+                    </div>
+
+                    <!-- Live port calls -->
+                    <div class="col-lg-7">
+                        <div class="o_mcc_panel h-100">
+                            <div class="o_mcc_panel_header">Live port calls</div>
+                            <t t-if="!state.data.live_port_calls.length">
+                                <p class="text-muted px-3 pb-3 mb-0">No active port calls in this scope.</p>
+                            </t>
+                            <div class="row g-2 px-2 pb-2">
+                                <t t-foreach="state.data.live_port_calls" t-as="pc" t-key="pc.id">
+                                    <div class="col-md-6">
+                                        <div t-attf-class="o_mcc_pc_card o_mcc_risk_#{pc.risk}"
+                                             t-on-click="() => this.openRecord('port.call', pc.id)">
+                                            <div class="d-flex justify-content-between">
+                                                <strong t-esc="pc.vessel"/>
+                                                <span class="badge text-bg-light" t-esc="pc.name"/>
+                                            </div>
+                                            <div class="text-muted small" t-esc="pc.port"/>
+                                            <div class="small">Agent: <t t-esc="pc.agent"/></div>
+                                            <div class="o_mcc_pc_stats mt-2">
+                                                <span><t t-esc="pc.open_mrs"/> open MRs</span>
+                                                <span t-esc="formatMoney(pc.po_amount)"/> PO
+                                            </div>
+                                            <div class="small mt-1">
+                                                <span class="badge text-bg-secondary" t-esc="pc.da_label"/>
+                                                <span class="ms-1 text-muted" t-esc="pc.summary"/>
+                                            </div>
+                                            <div class="small text-muted mt-1">
+                                                ETA <t t-esc="pc.eta"/> · ETD <t t-esc="pc.etd"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts row -->
+                <div class="row g-3 mb-4">
+                    <div class="col-lg-4">
+                        <div class="o_mcc_panel h-100">
+                            <div class="o_mcc_panel_header">Maintenance pipeline</div>
+                            <div class="o_mcc_chart_bars px-3 pb-3">
+                                <t t-foreach="state.data.mr_pipeline" t-as="bar" t-key="bar.key">
+                                    <div class="o_mcc_bar_row">
+                                        <span class="o_mcc_bar_label" t-esc="bar.label"/>
+                                        <div class="o_mcc_bar_track">
+                                            <div class="o_mcc_bar_fill"
+                                                 t-att-style="'width:' + (bar.value / maxChartValue(state.data.mr_pipeline) * 100) + '%; background-color:' + bar.color"/>
+                                        </div>
+                                        <span class="o_mcc_bar_value" t-esc="bar.value"/>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="o_mcc_panel h-100">
+                            <div class="o_mcc_panel_header">Open jobs by criticality</div>
+                            <div class="o_mcc_donut_legend px-3 pb-3">
+                                <t t-foreach="state.data.criticality_chart" t-as="c" t-key="c.key">
+                                    <div class="o_mcc_crit_row">
+                                        <span class="o_mcc_dot" t-att-style="'background:' + c.color"/>
+                                        <span class="flex-grow-1" t-esc="c.label"/>
+                                        <strong t-esc="c.value"/>
+                                    </div>
+                                </t>
+                            </div>
+                            <div class="o_mcc_panel_header border-top">Port calls by status</div>
+                            <div class="o_mcc_mini_pills px-3 pb-3">
+                                <t t-foreach="state.data.port_call_states" t-as="s" t-key="s.key">
+                                    <span class="o_mcc_pill" t-att-style="'border-color:' + s.color">
+                                        <span t-esc="s.label"/> <strong t-esc="s.value"/>
+                                    </span>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="o_mcc_panel h-100">
+                            <div class="o_mcc_panel_header">PDA vs PO vs FDA</div>
+                            <div class="px-3 pb-3">
+                                <t t-foreach="state.data.spend_chart" t-as="row" t-key="row.id">
+                                    <div class="o_mcc_spend_row mb-3"
+                                         t-on-click="() => this.openRecord('port.call', row.id)">
+                                        <div class="small fw-semibold" t-esc="row.label"/>
+                                        <div class="text-muted small mb-1" t-esc="row.sublabel"/>
+                                        <div class="o_mcc_spend_bars">
+                                            <div class="o_mcc_spend_bar pda"
+                                                 t-att-style="'width:' + (row.pda / maxSpendRow(row) * 100) + '%'"
+                                                 t-att-title="'PDA ' + formatMoney(row.pda)"/>
+                                            <div class="o_mcc_spend_bar po"
+                                                 t-att-style="'width:' + (row.po / maxSpendRow(row) * 100) + '%'"
+                                                 t-att-title="'PO ' + formatMoney(row.po)"/>
+                                            <div class="o_mcc_spend_bar fda"
+                                                 t-att-style="'width:' + (row.fda / maxSpendRow(row) * 100) + '%'"
+                                                 t-att-title="'FDA ' + formatMoney(row.fda)"/>
+                                        </div>
+                                    </div>
+                                </t>
+                                <div class="o_mcc_spend_legend small text-muted">
+                                    <span><i class="o_mcc_legend_pda"/> PDA</span>
+                                    <span><i class="o_mcc_legend_po"/> PO</span>
+                                    <span><i class="o_mcc_legend_fda"/> FDA</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Variance + Timeline -->
+                <div class="row g-3 mb-4">
+                    <div class="col-lg-5">
+                        <div class="o_mcc_panel h-100">
+                            <div class="o_mcc_panel_header">Budget variance (FDA vs PDA)</div>
+                            <div class="px-3 pb-3">
+                                <t t-if="!state.data.variance_chart.length">
+                                    <p class="text-muted mb-0">No variance data in this scope.</p>
+                                </t>
+                                <t t-foreach="state.data.variance_chart" t-as="v" t-key="v.id">
+                                    <div class="o_mcc_var_row"
+                                         t-on-click="() => this.openRecord('port.disbursement.account', v.id)">
+                                        <div>
+                                            <div class="small fw-semibold" t-esc="v.label"/>
+                                            <div class="text-muted small" t-esc="v.sublabel"/>
+                                        </div>
+                                        <span t-attf-class="badge text-bg-#{v.tone === 'danger' ? 'danger' : 'success'}">
+                                            <t t-esc="v.variance_percent"/>%
+                                        </span>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="o_mcc_panel h-100">
+                            <div class="o_mcc_panel_header">Port call timeline (30 days)</div>
+                            <div class="o_mcc_timeline px-3 pb-3">
+                                <t t-if="!state.data.timeline or !state.data.timeline.items or !state.data.timeline.items.length">
+                                    <p class="text-muted mb-0">No upcoming port calls in the timeline window.</p>
+                                </t>
+                                <t t-foreach="state.data.timeline.items" t-as="tl" t-key="tl.id">
+                                    <div class="o_mcc_tl_row"
+                                         t-on-click="() => this.openRecord('port.call', tl.id)">
+                                        <div class="o_mcc_tl_label">
+                                            <strong t-esc="tl.label"/>
+                                            <span class="text-muted small ms-1" t-esc="tl.sublabel"/>
+                                            <t t-if="tl.vital">
+                                                <span class="badge text-bg-danger ms-1">
+                                                    <t t-esc="tl.vital"/> VITAL
+                                                </span>
+                                            </t>
+                                        </div>
+                                        <div class="o_mcc_tl_track">
+                                            <div t-attf-class="o_mcc_tl_bar o_mcc_tl_#{tl.state}"
+                                                 t-att-style="'margin-left:' + timelineOffset(tl.start, state.data.timeline.from, state.data.timeline.to) + '%; width:' + timelineWidth(tl.start, tl.end, state.data.timeline.from, state.data.timeline.to) + '%'"/>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- At risk + Activity -->
+                <div class="row g-3">
+                    <div class="col-lg-5">
+                        <div class="o_mcc_panel h-100">
+                            <div class="o_mcc_panel_header">At risk</div>
+                            <t t-if="!state.data.at_risk.length">
+                                <p class="text-muted px-3 pb-3 mb-0">No escalations — fleet looks on track.</p>
+                            </t>
+                            <t t-foreach="state.data.at_risk" t-as="risk" t-key="risk.id + risk.model">
+                                <div t-attf-class="o_mcc_queue_item o_mcc_tone_#{risk.tone}"
+                                     t-on-click="() => this.openRecord(risk.model, risk.id)">
+                                    <div class="fw-semibold" t-esc="risk.title"/>
+                                    <div class="small text-muted" t-esc="risk.subtitle"/>
+                                    <div class="small mt-1" t-esc="risk.reason"/>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="o_mcc_panel h-100">
+                            <div class="o_mcc_panel_header">Recent activity</div>
+                            <t t-if="!state.data.activity_feed.length">
+                                <p class="text-muted px-3 pb-3 mb-0">No recent chatter in this scope.</p>
+                            </t>
+                            <t t-foreach="state.data.activity_feed" t-as="act" t-key="act.id">
+                                <div class="o_mcc_activity_item"
+                                     t-on-click="() => this.openRecord(act.model, act.res_id)">
+                                    <div class="small text-muted">
+                                        <t t-esc="act.date"/> · <t t-esc="act.author"/>
+                                    </div>
+                                    <div t-esc="act.body"/>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </Layout>
+    </div>
+</t>
+
+</templates>

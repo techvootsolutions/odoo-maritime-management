@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="vessel_equipment_category" model="maintenance.equipment.category">
+        <field name="name">Dry Bulk Fleet</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="technician_user_id" ref="user_demo_superintendent"/>
+    </record>
+
+    <record id="vessel_maintenance_team" model="maintenance.team">
+        <field name="name">Fleet Technical</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="member_ids" eval="[(4, ref('user_demo_superintendent'))]"/>
+    </record>
+
+    <record id="analytic_plan_vessels" model="account.analytic.plan">
+        <field name="name">Vessels</field>
+    </record>
+
+    <record id="analytic_account_vessel_alpha" model="account.analytic.account">
+        <field name="name">MV Seatribute Alpha</field>
+        <field name="code">VSL-ALPHA</field>
+        <field name="plan_id" ref="analytic_plan_vessels"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="analytic_account_vessel_beta" model="account.analytic.account">
+        <field name="name">MV Seatribute Beta</field>
+        <field name="code">VSL-BETA</field>
+        <field name="plan_id" ref="analytic_plan_vessels"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="analytic_account_vessel_gamma" model="account.analytic.account">
+        <field name="name">MV Seatribute Gamma</field>
+        <field name="code">VSL-GAMMA</field>
+        <field name="plan_id" ref="analytic_plan_vessels"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="analytic_account_vessel_delta" model="account.analytic.account">
+        <field name="name">MV Seatribute Delta</field>
+        <field name="code">VSL-DELTA</field>
+        <field name="plan_id" ref="analytic_plan_vessels"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+    <record id="analytic_account_vessel_epsilon" model="account.analytic.account">
+        <field name="name">MV Seatribute Epsilon</field>
+        <field name="code">VSL-EPSILON</field>
+        <field name="plan_id" ref="analytic_plan_vessels"/>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+</odoo>

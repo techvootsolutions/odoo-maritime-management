@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Upcoming arrivals — populated by dashboard demo hook (ETA within 7 days) -->
+    <record id="port_call_delta_return_singapore" model="port.call">
+        <field name="vessel_id" ref="vessel_delta"/>
+        <field name="port_id" ref="port_singapore"/>
+        <field name="agent_id" ref="partner_agent_singapore"/>
+        <field name="eta" eval="(DateTime.now() + relativedelta(days=3)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="etd" eval="(DateTime.now() + relativedelta(days=6)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="state">planned</field>
+        <field name="note"><![CDATA[<p><b>UPCOMING</b> — Delta returning to Singapore for turbo follow-up survey.</p>]]></field>
+    </record>
+    <record id="port_call_epsilon_hong_kong" model="port.call">
+        <field name="vessel_id" ref="vessel_epsilon"/>
+        <field name="port_id" ref="port_hong_kong"/>
+        <field name="agent_id" ref="partner_agent_mumbai"/>
+        <field name="eta" eval="(DateTime.now() + relativedelta(days=5)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="etd" eval="(DateTime.now() + relativedelta(days=8)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        <field name="state">planned</field>
+        <field name="note"><![CDATA[<p><b>UPCOMING</b> — Epsilon ballast route via Hong Kong — stores replenishment planned.</p>]]></field>
+    </record>
+</odoo>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="product_category_spares" model="product.category">
+        <field name="name">Marine Spare Parts</field>
+    </record>
+
+    <record id="product_pump_seal" model="product.product">
+        <field name="name">Main Engine Pump Seal Kit</field>
+        <field name="default_code">SP-ME-SEAL-01</field>
+        <field name="type">consu</field>
+        <field name="is_storable">True</field>
+        <field name="purchase_ok">True</field>
+        <field name="categ_id" ref="product_category_spares"/>
+        <field name="list_price">500.0</field>
+        <field name="standard_price">380.0</field>
+    </record>
+
+    <record id="product_oil_filter" model="product.product">
+        <field name="name">Lube Oil Filter Element</field>
+        <field name="default_code">SP-LO-FLT-22</field>
+        <field name="type">consu</field>
+        <field name="is_storable">True</field>
+        <field name="purchase_ok">True</field>
+        <field name="categ_id" ref="product_category_spares"/>
+        <field name="list_price">150.0</field>
+        <field name="standard_price">95.0</field>
+    </record>
+
+    <record id="product_hvac_part" model="product.product">
+        <field name="name">HVAC Compressor Seal Kit</field>
+        <field name="default_code">SP-HVAC-CP-03</field>
+        <field name="type">consu</field>
+        <field name="is_storable">True</field>
+        <field name="purchase_ok">True</field>
+        <field name="categ_id" ref="product_category_spares"/>
+        <field name="list_price">2400.0</field>
+        <field name="standard_price">1850.0</field>
+    </record>
+
+    <record id="product_turbo_bearing" model="product.product">
+        <field name="name">Turbocharger Bearing Kit</field>
+        <field name="default_code">SP-TUR-BRG-11</field>
+        <field name="type">consu</field>
+        <field name="is_storable">True</field>
+        <field name="purchase_ok">True</field>
+        <field name="categ_id" ref="product_category_spares"/>
+        <field name="list_price">5200.0</field>
+        <field name="standard_price">4100.0</field>
+    </record>
+
+    <record id="product_generator_seal" model="product.product">
+        <field name="name">Generator Fuel Pump Seal Kit</field>
+        <field name="default_code">SP-GEN-FP-02</field>
+        <field name="type">consu</field>
+        <field name="is_storable">True</field>
+        <field name="purchase_ok">True</field>
+        <field name="categ_id" ref="product_category_spares"/>
+        <field name="list_price">890.0</field>
+        <field name="standard_price">620.0</field>
+    </record>
+
+    <record id="product_ballast_impeller" model="product.product">
+        <field name="name">Ballast Pump Impeller</field>
+        <field name="default_code">SP-BAL-IMP-04</field>
+        <field name="type">consu</field>
+        <field name="is_storable">True</field>
+        <field name="purchase_ok">True</field>
+        <field name="categ_id" ref="product_category_spares"/>
+        <field name="list_price">1600.0</field>
+        <field name="standard_price">1200.0</field>
+    </record>
+
+    <record id="product_valve_kit" model="product.product">
+        <field name="name">Cargo Valve Repair Kit</field>
+        <field name="default_code">SP-CV-KIT-08</field>
+        <field name="type">consu</field>
+        <field name="is_storable">True</field>
+        <field name="purchase_ok">True</field>
+        <field name="categ_id" ref="product_category_spares"/>
+        <field name="list_price">3200.0</field>
+        <field name="standard_price">2400.0</field>
+    </record>
+</odoo>

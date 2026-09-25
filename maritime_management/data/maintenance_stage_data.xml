@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+  <!-- Maritime shore workflow stages for MR kanban -->
+  <record id="maritime_mr_stage_draft" model="maintenance.stage">
+    <field name="name">Draft</field>
+    <field name="sequence">10</field>
+  </record>
+  <record id="maritime_mr_stage_submitted" model="maintenance.stage">
+    <field name="name">Submitted to Shore</field>
+    <field name="sequence">20</field>
+  </record>
+  <record id="maritime_mr_stage_approved" model="maintenance.stage">
+    <field name="name">Approved</field>
+    <field name="sequence">30</field>
+  </record>
+  <record id="maritime_mr_stage_assigned" model="maintenance.stage">
+    <field name="name">Assigned to Port Call</field>
+    <field name="sequence">40</field>
+  </record>
+  <record id="maritime_mr_stage_procured" model="maintenance.stage">
+    <field name="name">Procured</field>
+    <field name="sequence">50</field>
+  </record>
+  <record id="maritime_mr_stage_delivered" model="maintenance.stage">
+    <field name="name">Delivered Onboard</field>
+    <field name="sequence">60</field>
+  </record>
+  <record id="maritime_mr_stage_done" model="maintenance.stage">
+    <field name="name">Done</field>
+    <field name="sequence">70</field>
+    <field name="fold" eval="True"/>
+    <field name="done" eval="True"/>
+  </record>
+  <record id="maritime_mr_stage_cancelled" model="maintenance.stage">
+    <field name="name">Cancelled</field>
+    <field name="sequence">80</field>
+    <field name="fold" eval="True"/>
+    <field name="done" eval="True"/>
+  </record>
+</odoo>

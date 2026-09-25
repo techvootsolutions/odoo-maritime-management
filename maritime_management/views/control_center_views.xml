@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_control_center_dashboard" model="ir.actions.client">
+        <field name="name">Control Center</field>
+        <field name="tag">maritime_management.control_center_dashboard</field>
+        <field name="target">current</field>
+    </record>
+
+    <record id="action_port_calls_list" model="ir.actions.act_window">
+        <field name="name">All Port Calls</field>
+        <field name="res_model">port.call</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="context">{'search_default_filter_live': 1}</field>
+    </record>
+
+    <record id="action_port_calls_active" model="ir.actions.act_window">
+        <field name="name">Live Port Calls</field>
+        <field name="res_model">port.call</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="domain">[('state', '=', 'active')]</field>
+    </record>
+
+    <record id="action_port_calls_planned" model="ir.actions.act_window">
+        <field name="name">Planned Port Calls</field>
+        <field name="res_model">port.call</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="domain">[('state', '=', 'planned')]</field>
+    </record>
+
+    <record id="action_mr_submitted" model="ir.actions.act_window">
+        <field name="name">Awaiting Approval</field>
+        <field name="res_model">maintenance.request</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('port_call_id', '!=', False), ('shore_state', '=', 'submitted')]</field>
+    </record>
+
+    <record id="action_mr_vital" model="ir.actions.act_window">
+        <field name="name">VITAL Jobs</field>
+        <field name="res_model">maintenance.request</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[
+            ('port_call_id', '!=', False),
+            ('criticality', '=', 'vital'),
+            ('shore_state', 'not in', ('done', 'cancelled')),
+        ]</field>
+    </record>
+
+    <record id="action_mr_procurement" model="ir.actions.act_window">
+        <field name="name">Agent Still Buying</field>
+        <field name="res_model">maintenance.request</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[
+            ('port_call_id', '!=', False),
+            ('shore_state', 'in', ('assigned', 'approved')),
+            ('procurement_status', 'in', ('none', 'rfq')),
+        ]</field>
+    </record>
+
+    <record id="action_mr_delivered" model="ir.actions.act_window">
+        <field name="name">Delivered Onboard</field>
+        <field name="res_model">maintenance.request</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[
+            ('port_call_id', '!=', False),
+            ('shore_state', '=', 'delivered'),
+        ]</field>
+    </record>
+
+    <record id="action_disbursement_pda" model="ir.actions.act_window">
+        <field name="name">PDA to Approve</field>
+        <field name="res_model">port.disbursement.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'pda_submitted')]</field>
+    </record>
+
+    <record id="action_disbursement_fda" model="ir.actions.act_window">
+        <field name="name">FDA to Review</field>
+        <field name="res_model">port.disbursement.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'fda_submitted')]</field>
+    </record>
+
+    <record id="action_disbursement_matched" model="ir.actions.act_window">
+        <field name="name">Ready to Pay</field>
+        <field name="res_model">port.disbursement.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'matched')]</field>
+    </record>
+
+    <record id="action_disbursement_paid" model="ir.actions.act_window">
+        <field name="name">Paid Disbursements</field>
+        <field name="res_model">port.disbursement.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'paid')]</field>
+    </record>
+
+    <record id="action_disbursement_executing" model="ir.actions.act_window">
+        <field name="name">Agent Purchasing</field>
+        <field name="res_model">port.disbursement.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'executing')]</field>
+    </record>
+</odoo>

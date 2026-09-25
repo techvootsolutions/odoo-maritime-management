@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- ALPHA HONG KONG — procured + delivered -->
+    <record id="mr_alpha_pump_seal" model="maintenance.request">
+        <field name="name">Main engine pump seal failure</field>
+        <field name="equipment_id" ref="vessel_alpha"/>
+        <field name="maintenance_type">corrective</field>
+        <field name="priority">3</field>
+        <field name="criticality">vital</field>
+        <field name="part_number">SP-ME-SEAL-01</field>
+        <field name="maker_ref">MAN B&amp;W 6S50MC-C</field>
+        <field name="port_call_id" ref="port_call_alpha_mumbai"/>
+        <field name="shore_state">approved</field>
+    </record>
+    <record id="mr_alpha_pump_seal_part" model="maintenance.part.line">
+        <field name="request_id" ref="mr_alpha_pump_seal"/>
+        <field name="name">Pump seal kit</field>
+        <field name="part_number">SP-ME-SEAL-01</field>
+        <field name="product_id" ref="product_pump_seal"/>
+        <field name="quantity">2</field>
+        <field name="criticality">vital</field>
+    </record>
+    <record id="mr_alpha_filter" model="maintenance.request">
+        <field name="name">Scheduled lube oil filter change</field>
+        <field name="equipment_id" ref="vessel_alpha"/>
+        <field name="maintenance_type">preventive</field>
+        <field name="priority">2</field>
+        <field name="criticality">essential</field>
+        <field name="part_number">SP-LO-FLT-22</field>
+        <field name="port_call_id" ref="port_call_alpha_mumbai"/>
+        <field name="shore_state">approved</field>
+    </record>
+    <record id="mr_alpha_filter_part" model="maintenance.part.line">
+        <field name="request_id" ref="mr_alpha_filter"/>
+        <field name="name">Lube oil filter element</field>
+        <field name="part_number">SP-LO-FLT-22</field>
+        <field name="product_id" ref="product_oil_filter"/>
+        <field name="quantity">4</field>
+        <field name="criticality">essential</field>
+    </record>
+
+    <!-- BETA HONG KONG -->
+    <record id="mr_beta_valve" model="maintenance.request">
+        <field name="name">Cargo valve actuator repair</field>
+        <field name="equipment_id" ref="vessel_beta"/>
+        <field name="maintenance_type">corrective</field>
+        <field name="priority">3</field>
+        <field name="criticality">vital</field>
+        <field name="part_number">SP-CV-KIT-08</field>
+        <field name="port_call_id" ref="port_call_beta_mumbai"/>
+        <field name="shore_state">approved</field>
+    </record>
+    <record id="mr_beta_valve_part" model="maintenance.part.line">
+        <field name="request_id" ref="mr_beta_valve"/>
+        <field name="name">Cargo valve repair kit</field>
+        <field name="part_number">SP-CV-KIT-08</field>
+        <field name="product_id" ref="product_valve_kit"/>
+        <field name="quantity">1</field>
+        <field name="criticality">vital</field>
+    </record>
+
+    <!-- GAMMA PIRAEUS — submitted + approved -->
+    <record id="mr_gamma_stores" model="maintenance.request">
+        <field name="name">Engine room stores replenishment</field>
+        <field name="equipment_id" ref="vessel_gamma"/>
+        <field name="maintenance_type">preventive</field>
+        <field name="priority">1</field>
+        <field name="criticality">desirable</field>
+        <field name="port_call_id" ref="port_call_gamma_piraeus"/>
+        <field name="shore_state">submitted</field>
+    </record>
+    <record id="mr_gamma_hvac" model="maintenance.request">
+        <field name="name">HVAC compressor spare parts</field>
+        <field name="equipment_id" ref="vessel_gamma"/>
+        <field name="maintenance_type">corrective</field>
+        <field name="priority">2</field>
+        <field name="criticality">essential</field>
+        <field name="part_number">SP-HVAC-CP-03</field>
+        <field name="port_call_id" ref="port_call_gamma_piraeus"/>
+        <field name="shore_state">approved</field>
+    </record>
+    <record id="mr_gamma_hvac_part" model="maintenance.part.line">
+        <field name="request_id" ref="mr_gamma_hvac"/>
+        <field name="name">HVAC compressor seal kit</field>
+        <field name="part_number">SP-HVAC-CP-03</field>
+        <field name="product_id" ref="product_hvac_part"/>
+        <field name="quantity">1</field>
+        <field name="criticality">essential</field>
+    </record>
+
+    <!-- DELTA SINGAPORE — completed -->
+    <record id="mr_delta_turbo" model="maintenance.request">
+        <field name="name">Turbocharger bearing replacement</field>
+        <field name="equipment_id" ref="vessel_delta"/>
+        <field name="maintenance_type">corrective</field>
+        <field name="priority">3</field>
+        <field name="criticality">vital</field>
+        <field name="part_number">SP-TUR-BRG-11</field>
+        <field name="port_call_id" ref="port_call_delta_singapore"/>
+        <field name="shore_state">approved</field>
+    </record>
+    <record id="mr_delta_turbo_part" model="maintenance.part.line">
+        <field name="request_id" ref="mr_delta_turbo"/>
+        <field name="name">Turbocharger bearing kit</field>
+        <field name="part_number">SP-TUR-BRG-11</field>
+        <field name="product_id" ref="product_turbo_bearing"/>
+        <field name="quantity">1</field>
+        <field name="criticality">vital</field>
+    </record>
+
+    <!-- EPSILON PIRAEUS — done + cancelled -->
+    <record id="mr_epsilon_ballast" model="maintenance.request">
+        <field name="name">Ballast pump impeller renewal</field>
+        <field name="equipment_id" ref="vessel_epsilon"/>
+        <field name="maintenance_type">preventive</field>
+        <field name="priority">2</field>
+        <field name="criticality">essential</field>
+        <field name="port_call_id" ref="port_call_epsilon_piraeus"/>
+        <field name="shore_state">approved</field>
+    </record>
+    <record id="mr_epsilon_cancelled" model="maintenance.request">
+        <field name="name">Navigation radar display (cancelled - warranty)</field>
+        <field name="equipment_id" ref="vessel_epsilon"/>
+        <field name="maintenance_type">corrective</field>
+        <field name="priority">1</field>
+        <field name="criticality">desirable</field>
+        <field name="port_call_id" ref="port_call_epsilon_piraeus"/>
+        <field name="shore_state">submitted</field>
+    </record>
+</odoo>

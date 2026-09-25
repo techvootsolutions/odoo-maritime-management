@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Port Call Templates -->
+    <record id="mail_template_port_call_activated" model="mail.template">
+        <field name="name">Maritime: Port Call Activated</field>
+        <field name="model_id" ref="model_port_call"/>
+        <field name="subject">Port call activated — {{ object.vessel_id.name }} @ {{ object.port_id.name }}</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="email_to">{{ object.agent_id.email }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Hello <t t-out="object.agent_id.name"/>,</p>
+                <p>
+                    Port call <strong><t t-out="object.name"/></strong> is now
+                    <strong>active</strong>.
+                </p>
+                <ul>
+                    <li>Vessel: <t t-out="object.vessel_id.name"/></li>
+                    <li>Port: <t t-out="object.port_id.name"/></li>
+                    <li>ETA: <t t-out="object.eta"/></li>
+                    <li>ETD: <t t-out="object.etd"/></li>
+                </ul>
+                <p>Please prepare procurement and agency services for this visit.</p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Disbursement Account Templates -->
+    <record id="mail_template_pda_submitted_finance" model="mail.template">
+        <field name="name">Maritime: PDA Submitted for Review</field>
+        <field name="model_id" ref="model_port_disbursement_account"/>
+        <field name="subject">PDA submitted — {{ object.name }} ({{ object.port_call_id.name }})</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="body_html" type="html">
+            <div>
+                <p>Hello,</p>
+                <p>
+                    A Proforma Disbursement Account (PDA) has been submitted for your review:
+                </p>
+                <ul>
+                    <li>DA: <strong><t t-out="object.name"/></strong></li>
+                    <li>Port call: <t t-out="object.port_call_id.name"/></li>
+                    <li>Vessel: <t t-out="object.vessel_id.name"/></li>
+                    <li>Port: <t t-out="object.port_id.name"/></li>
+                    <li>Agent: <t t-out="object.agent_id.name"/></li>
+                    <li>PDA total: <t t-out="object.pda_amount"/> <t t-out="object.currency_id.name"/></li>
+                </ul>
+                <p>Please review and approve the budget before the agent starts purchasing.</p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <record id="mail_template_pda_approved_agent" model="mail.template">
+        <field name="name">Maritime: PDA Approved</field>
+        <field name="model_id" ref="model_port_disbursement_account"/>
+        <field name="subject">PDA approved — spending authority for {{ object.port_call_id.name }}</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="email_to">{{ object.agent_id.email }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Hello <t t-out="object.agent_id.name"/>,</p>
+                <p>
+                    The Proforma Disbursement Account (PDA) for
+                    <strong><t t-out="object.name"/></strong> has been
+                    <strong>approved</strong>.
+                </p>
+                <ul>
+                    <li>Port call: <t t-out="object.port_call_id.name"/></li>
+                    <li>Vessel: <t t-out="object.vessel_id.name"/></li>
+                    <li>Approved budget (PDA): <t t-out="object.pda_amount"/> <t t-out="object.currency_id.name"/></li>
+                </ul>
+                <p>You may now procure spare parts and services within the approved budget.</p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <record id="mail_template_fda_submitted_finance" model="mail.template">
+        <field name="name">Maritime: FDA Submitted for Review</field>
+        <field name="model_id" ref="model_port_disbursement_account"/>
+        <field name="subject">FDA submitted — {{ object.name }} ({{ object.port_call_id.name }})</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="body_html" type="html">
+            <div>
+                <p>Hello,</p>
+                <p>
+                    A Final Disbursement Account (FDA) has been submitted for 3-way match:
+                </p>
+                <ul>
+                    <li>DA: <strong><t t-out="object.name"/></strong></li>
+                    <li>Port call: <t t-out="object.port_call_id.name"/></li>
+                    <li>PDA (estimate): <t t-out="object.pda_amount"/> <t t-out="object.currency_id.name"/></li>
+                    <li>FDA (actual): <t t-out="object.fda_amount"/> <t t-out="object.currency_id.name"/></li>
+                    <li>Variance: <t t-out="object.variance_amount"/> <t t-out="object.currency_id.name"/>
+                        (<t t-out="object.variance_percent"/>%)</li>
+                </ul>
+                <p>Please review actual costs against the approved budget and linked purchase orders.</p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <record id="mail_template_da_paid_agent" model="mail.template">
+        <field name="name">Maritime: Disbursement Account Paid</field>
+        <field name="model_id" ref="model_port_disbursement_account"/>
+        <field name="subject">Payment approved — {{ object.name }}</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="email_to">{{ object.agent_id.email }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Hello <t t-out="object.agent_id.name"/>,</p>
+                <p>
+                    Payment has been approved for disbursement account
+                    <strong><t t-out="object.name"/></strong>
+                    (port call <t t-out="object.port_call_id.name"/>).
+                </p>
+                <p>Final amount (FDA): <t t-out="object.fda_amount"/> <t t-out="object.currency_id.name"/></p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Maintenance Request & Procurement Templates -->
+    <record id="mail_template_mr_submitted_superintendent" model="mail.template">
+        <field name="name">Maritime: MR Submitted for Approval</field>
+        <field name="model_id" ref="maintenance.model_maintenance_request"/>
+        <field name="subject">Maintenance request submitted — {{ object.name }}</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="body_html" type="html">
+            <div>
+                <p>Hello,</p>
+                <p>
+                    A maintenance request (MR) has been submitted from the vessel and
+                    requires shore approval:
+                </p>
+                <ul>
+                    <li>MR: <strong><t t-out="object.name"/></strong></li>
+                    <li>Vessel: <t t-out="object.equipment_id.name"/></li>
+                    <li>Criticality: <t t-out="object.criticality"/></li>
+                    <li>Required by: <t t-out="object.required_by_date"/></li>
+                    <li>Port call: <t t-out="object.port_call_id.name or 'Not assigned yet'"/></li>
+                </ul>
+                <p>Please review and approve in Maritime → Maintenance Requests.</p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <record id="mail_template_mr_assigned_agent" model="mail.template">
+        <field name="name">Maritime: MR Assigned to Port Call</field>
+        <field name="model_id" ref="maintenance.model_maintenance_request"/>
+        <field name="subject">New job for {{ object.port_call_id.name }} — {{ object.name }}</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="email_to">{{ object.port_call_id.agent_id.email }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Hello <t t-out="object.port_call_id.agent_id.name"/>,</p>
+                <p>
+                    A maintenance request has been assigned to your port call
+                    <strong><t t-out="object.port_call_id.name"/></strong>:
+                </p>
+                <ul>
+                    <li>Job: <strong><t t-out="object.name"/></strong></li>
+                    <li>Vessel: <t t-out="object.equipment_id.name"/></li>
+                    <li>Criticality: <t t-out="object.criticality"/></li>
+                    <li>Required by: <t t-out="object.required_by_date"/></li>
+                </ul>
+                <p>Please prepare quotations and procurement for this job.</p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <record id="mail_template_po_confirmed" model="mail.template">
+        <field name="name">Maritime: PO Confirmed for MR</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="subject">Purchase confirmed for {{ object.port_call_id.name }}</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="body_html" type="html">
+            <div>
+                <p>Hello,</p>
+                <p>
+                    Port agent has confirmed purchase order
+                    <strong><t t-out="object.name"/></strong>
+                    for port call
+                    <strong><t t-out="object.port_call_id.name"/></strong>.
+                </p>
+                <p>Linked maintenance requests:</p>
+                <ul>
+                    <t t-foreach="object.order_line.filtered(lambda l: l.maintenance_request_id)" t-as="line">
+                        <li>
+                            <t t-out="line.maintenance_request_id.name"/> —
+                            <t t-out="line.maintenance_request_id.equipment_id.name or ''"/>
+                        </li>
+                    </t>
+                </ul>
+                <p>Total PO value: <t t-out="object.amount_total"/> <t t-out="object.currency_id.name"/></p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <record id="mail_template_po_confirmed_agent" model="mail.template">
+        <field name="name">Maritime: PO Confirmed (Agent Copy)</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="subject">Your purchase confirmed — {{ object.name }}</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="use_default_to" eval="False"/>
+        <field name="email_to">{{ object.port_call_id.agent_id.email }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Hello <t t-out="object.port_call_id.agent_id.name"/>,</p>
+                <p>
+                    Your purchase order <strong><t t-out="object.name"/></strong>
+                    for port call <t t-out="object.port_call_id.name"/> has been
+                    confirmed with the vendor.
+                </p>
+                <p>Total: <t t-out="object.amount_total"/> <t t-out="object.currency_id.name"/></p>
+                <p>Shore office teams have been notified.</p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+</odoo>

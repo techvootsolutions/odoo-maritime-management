@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="port_call_view_list" model="ir.ui.view">
+        <field name="name">port.call.list</field>
+        <field name="model">port.call</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'planned'"
+                  decoration-success="state == 'active'"
+                  decoration-muted="state in ('departed', 'closed')">
+                <field name="name"/>
+                <field name="vessel_id"/>
+                <field name="port_id"/>
+                <field name="agent_id"/>
+                <field name="eta"/>
+                <field name="etd"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'planned'"
+                       decoration-success="state == 'active'"
+                       decoration-warning="state == 'departed'"
+                       decoration-muted="state == 'closed'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="port_call_view_kanban" model="ir.ui.view">
+        <field name="name">port.call.kanban</field>
+        <field name="model">port.call</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="vessel_id"/>
+                <field name="port_id"/>
+                <field name="agent_id"/>
+                <field name="eta"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="fw-bold">
+                            <field name="name"/>
+                        </div>
+                        <div>
+                            <field name="vessel_id"/>
+                        </div>
+                        <div class="text-muted">
+                            <field name="port_id"/>
+                        </div>
+                        <div>
+                            Agent: <field name="agent_id"/>
+                        </div>
+                        <div>
+                            ETA: <field name="eta"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="port_call_view_form" model="ir.ui.view">
+        <field name="name">port.call.form</field>
+        <field name="model">port.call</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_plan" string="Plan" type="object"
+                            invisible="state != 'draft'" class="btn-primary"/>
+                    <button name="action_activate" string="Activate" type="object"
+                            invisible="state != 'planned'" class="btn-primary"/>
+                    <button name="action_depart" string="Departed" type="object"
+                            invisible="state != 'active'"/>
+                    <button name="action_close" string="Close" type="object"
+                            invisible="state != 'departed'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,planned,active,departed,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="vessel_id"/>
+                            <field name="port_id"/>
+                            <field name="agent_id"/>
+                        </group>
+                        <group>
+                            <field name="eta"
+                                   help="Estimated Time of Arrival — when the vessel is expected to reach the port."/>
+                            <field name="etd"
+                                   help="Estimated Time of Departure — when the vessel is expected to leave the port."/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes" name="notes">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="port_call_view_search" model="ir.ui.view">
+        <field name="name">port.call.search</field>
+        <field name="model">port.call</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="vessel_id"/>
+                <field name="port_id"/>
+                <field name="agent_id"/>
+                <filter string="Active" name="filter_active" domain="[('state', '=', 'active')]"/>
+                <filter string="Planned" name="filter_planned" domain="[('state', '=', 'planned')]"/>
+                <group>
+                    <filter string="Port" name="group_port" context="{'group_by': 'port_id'}"/>
+                    <filter string="Vessel" name="group_vessel" context="{'group_by': 'vessel_id'}"/>
+                    <filter string="Agent" name="group_agent" context="{'group_by': 'agent_id'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="port_call_action" model="ir.actions.act_window">
+        <field name="name">Port Calls</field>
+        <field name="res_model">port.call</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'search_default_filter_active': 1}</field>
+    </record>
+
+    <record id="port_call_view_form_disbursement" model="ir.ui.view">
+        <field name="name">port.call.form.disbursement</field>
+        <field name="model">port.call</field>
+        <field name="inherit_id" ref="port_call_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_view_disbursements" type="object"
+                            class="oe_stat_button" icon="fa-money">
+                        <field name="disbursement_count" widget="statinfo" string="DAs"
+                               help="Disbursement Accounts — port expense records (PDA estimate and FDA actual)."/>
+                    </button>
+                </div>
+            </xpath>
+            <xpath expr="//group/group" position="inside">
+                <field name="pda_amount"/>
+                <field name="fda_amount"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="port_call_view_form_procurement" model="ir.ui.view">
+        <field name="name">port.call.form.procurement</field>
+        <field name="model">port.call</field>
+        <field name="inherit_id" ref="port_call_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_maintenance_requests" type="object"
+                        class="oe_stat_button" icon="fa-wrench">
+                    <div class="o_field_statinfo">
+                        <span class="o_stat_value"><field name="open_mr_count"/></span>
+                        <span class="o_stat_text" title="Maintenance Requests not yet completed">Open MRs</span>
+                    </div>
+                </button>
+                <button name="action_view_purchase_orders" type="object"
+                        groups="purchase.group_purchase_user"
+                        class="oe_stat_button" icon="fa-shopping-cart">
+                    <field name="purchase_order_count" widget="statinfo" string="POs"
+                           help="Purchase Orders (PO) raised by the port agent for this call."/>
+                </button>
+                <button name="action_view_vendor_bills" type="object"
+                        groups="account.group_account_invoice,account.group_account_readonly"
+                        class="oe_stat_button" icon="fa-file-text-o">
+                    <field name="vendor_bill_count" widget="statinfo" string="Bills"
+                           help="Vendor Bills linked to this port call."/>
+                </button>
+            </xpath>
+            <xpath expr="//group/group" position="inside">
+                <field name="po_amount"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Maintenance Requests" name="maintenance_requests">
+                    <field name="maintenance_request_ids" readonly="1">
+                        <list>
+                            <field name="name"/>
+                            <field name="equipment_id"/>
+                            <field name="criticality"/>
+                            <field name="shore_state"/>
+                            <field name="procurement_status"/>
+                            <field name="required_by_date"/>
+                            <field name="purchase_amount"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Purchase Orders" name="purchase_orders" groups="purchase.group_purchase_user">
+                    <field name="purchase_order_ids" readonly="1">
+                        <list>
+                            <field name="name"/>
+                            <field name="partner_id"/>
+                            <field name="date_order"/>
+                            <field name="amount_total"/>
+                            <field name="state"/>
+                            <field name="invoice_status"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Vendor Bills" name="vendor_bills" groups="account.group_account_invoice,account.group_account_readonly">
+                    <field name="vendor_bill_ids" readonly="1">
+                        <list>
+                            <field name="name"/>
+                            <field name="partner_id"/>
+                            <field name="invoice_date"/>
+                            <field name="amount_total"/>
+                            <field name="state"/>
+                            <field name="payment_state"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Dashboard Summary" name="dashboard">
+                    <group>
+                        <group string="Operations">
+                            <field name="maintenance_request_count"/>
+                            <field name="open_mr_count"/>
+                            <field name="purchase_order_count"/>
+                            <field name="vendor_bill_count"/>
+                        </group>
+                        <group string="Financials">
+                            <field name="pda_amount"/>
+                            <field name="po_amount"/>
+                            <field name="fda_amount"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="port_call_view_kanban_dashboard" model="ir.ui.view">
+        <field name="name">port.call.kanban.dashboard</field>
+        <field name="model">port.call</field>
+        <field name="inherit_id" ref="port_call_view_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//templates/t[@t-name='card']/div[last()]" position="after">
+                <div class="mt-2">
+                    <span class="badge text-bg-secondary me-1">
+                        MRs: <field name="open_mr_count"/>
+                    </span>
+                    <span class="badge text-bg-secondary">
+                        PO: <field name="po_amount"/>
+                    </span>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="port_call_dashboard_action" model="ir.actions.act_window">
+        <field name="name">Port Call Dashboard</field>
+        <field name="res_model">port.call</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'search_default_filter_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Port call dashboard — track MRs, POs, and disbursement accounts per vessel visit.
+            </p>
+        </field>
+    </record>
+
+    <!-- Control Center list: expenses, open jobs and summary columns -->
+    <record id="port_call_view_list_control_center" model="ir.ui.view">
+        <field name="name">port.call.list.control.center</field>
+        <field name="model">port.call</field>
+        <field name="inherit_id" ref="port_call_view_list"/>
+        <field name="priority">5</field>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="default_order">state,eta desc</attribute>
+            </xpath>
+            <xpath expr="//field[@name='eta']" position="attributes">
+                <attribute name="help">Estimated Time of Arrival — hover column header or open form for details.</attribute>
+            </xpath>
+            <xpath expr="//field[@name='etd']" position="attributes">
+                <attribute name="help">Estimated Time of Departure — when the vessel is expected to leave the port.</attribute>
+            </xpath>
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="open_mr_count" string="Open Jobs"
+                       help="Open Maintenance Requests (MR) — spare parts jobs not yet done."/>
+                <field name="po_amount" string="Purchases"
+                       help="Purchase Order (PO) value confirmed for this port call."/>
+                <field name="pda_amount" string="Budget"
+                       help="Proforma Disbursement Account (PDA) — approved budget for this port call."/>
+                <field name="da_primary_state" string="Expenses" widget="badge"/>
+                <field name="demo_highlight" string="Summary" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="port_call_view_search_control_center" model="ir.ui.view">
+        <field name="name">port.call.search.control.center</field>
+        <field name="model">port.call</field>
+        <field name="inherit_id" ref="port_call_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='filter_active']" position="before">
+                <filter string="Live Port Calls" name="filter_live"
+                        domain="[('state', 'in', ('active', 'departed'))]"/>
+                <filter string="Needs Finance Review (FDA)" name="filter_finance"
+                        domain="[('disbursement_ids.state', '=', 'fda_submitted')]"/>
+                <filter string="Waiting for Budget Approval (PDA)" name="filter_pda"
+                        domain="[('disbursement_ids.state', '=', 'pda_submitted')]"/>
+                <separator/>
+            </xpath>
+            <xpath expr="//filter[@name='filter_active']" position="attributes">
+                <attribute name="string">Active Only</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

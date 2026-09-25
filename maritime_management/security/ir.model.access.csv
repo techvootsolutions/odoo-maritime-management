@@ -1,0 +1,14 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_maritime_port_user,maritime.port.user,model_maritime_port,group_maritime_user,1,1,1,0
+access_maritime_port_superintendent,maritime.port.superintendent,model_maritime_port,group_maritime_superintendent,1,1,1,1
+access_port_call_user,port.call.user,model_port_call,group_maritime_user,1,1,1,0
+access_port_call_superintendent,port.call.superintendent,model_port_call,group_maritime_superintendent,1,1,1,1
+access_port_call_agent,port.call.agent,model_port_call,group_maritime_agent,1,1,0,0
+access_port_disbursement_user,port.disbursement.account.user,model_port_disbursement_account,group_maritime_user,1,0,0,0
+access_port_disbursement_agent,port.disbursement.account.agent,model_port_disbursement_account,group_maritime_agent,1,1,1,0
+access_port_disbursement_finance,port.disbursement.account.finance,model_port_disbursement_account,group_maritime_finance,1,1,1,1
+access_port_disbursement_superintendent,port.disbursement.account.superintendent,model_port_disbursement_account,group_maritime_superintendent,1,1,1,0
+access_port_disbursement_line_user,port.disbursement.line.user,model_port_disbursement_line,group_maritime_user,1,0,0,0
+access_port_disbursement_line_agent,port.disbursement.line.agent,model_port_disbursement_line,group_maritime_agent,1,1,1,0
+access_port_disbursement_line_finance,port.disbursement.line.finance,model_port_disbursement_line,group_maritime_finance,1,1,1,1
+access_maintenance_part_line_user,maintenance.part.line.user,model_maintenance_part_line,group_maritime_user,1,1,1,1

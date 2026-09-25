@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="base.main_company" model="res.company">
+        <field name="name">Sea Tribute Shipmanagement Ltd</field>
+        <field name="street">33 Akti Miaouli Str.</field>
+        <field name="city">Piraeus</field>
+        <field name="zip">185 35</field>
+        <field name="country_id" ref="base.gr"/>
+        <field name="email">ops@seatribute.demo</field>
+        <field name="phone">+30 210 000 0000</field>
+        <field name="website">https://www.seatribute.com</field>
+    </record>
+    <record id="base.partner_admin" model="res.partner">
+        <field name="name">Sea Tribute Shipmanagement Ltd</field>
+        <field name="street">33 Akti Miaouli Str.</field>
+        <field name="city">Piraeus</field>
+        <field name="zip">185 35</field>
+        <field name="country_id" ref="base.gr"/>
+        <field name="email">ops@seatribute.demo</field>
+        <field name="website">https://www.seatribute.com</field>
+    </record>
+</odoo>

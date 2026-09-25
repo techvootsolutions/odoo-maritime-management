@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_maritime_root"
+              name="Maritime"
+              web_icon="maritime_management,static/description/icon.png"
+              groups="maritime_management.group_maritime_user"
+              sequence="45"/>
+
+    <menuitem id="menu_control_center"
+              name="Control Center"
+              parent="menu_maritime_root"
+              action="action_control_center_dashboard"
+              sequence="1"/>
+
+    <menuitem id="menu_maritime_fleet_parent"
+              name="Fleet Management"
+              parent="menu_maritime_root"
+              sequence="5"/>
+
+    <menuitem id="menu_maritime_vessels"
+              name="Vessels"
+              parent="menu_maritime_fleet_parent"
+              action="maintenance_equipment_vessel_action"
+              sequence="1"/>
+
+    <menuitem id="menu_maritime_machinery"
+              name="Machinery"
+              parent="menu_maritime_fleet_parent"
+              action="maintenance_equipment_machinery_action"
+              sequence="2"/>
+
+    <menuitem id="menu_port_calls"
+              name="Port Calls"
+              parent="menu_maritime_root"
+              action="port_call_action"
+              sequence="10"/>
+
+    <menuitem id="menu_maritime_operations"
+              name="Operations"
+              parent="menu_maritime_root"
+              sequence="3"/>
+
+    <menuitem id="menu_maritime_maintenance_requests"
+              name="Maintenance Requests"
+              parent="menu_maritime_operations"
+              action="maintenance_request_maritime_action"
+              sequence="20"/>
+
+    <menuitem id="menu_disbursement_accounts"
+              name="Disbursement Accounts"
+              parent="menu_maritime_root"
+              action="port_disbursement_action"
+              sequence="30"/>
+
+    <menuitem id="menu_maritime_configuration"
+              name="Configuration"
+              parent="menu_maritime_root"
+              sequence="90"/>
+
+    <menuitem id="menu_maritime_ports"
+              name="Ports"
+              parent="menu_maritime_configuration"
+              action="maritime_port_action"
+              sequence="10"/>
+
+    <menuitem id="menu_maritime_mr_stages"
+              name="MR Status Labels"
+              parent="menu_maritime_configuration"
+              action="maintenance.hr_equipment_stage_action"
+              sequence="20"
+              groups="maintenance.group_equipment_manager"/>
+</odoo>

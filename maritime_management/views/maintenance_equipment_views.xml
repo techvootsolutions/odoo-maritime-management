@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="maintenance_equipment_view_form_maritime" model="ir.ui.view">
+        <field name="name">maintenance.equipment.form.maritime</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_vessel_equipments"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-cubes"
+                        invisible="not is_vessel">
+                    <field name="equipment_count" widget="statinfo" string="Machinery"/>
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='serial_no']" position="after">
+                <field name="is_vessel" invisible="1"/>
+                <field name="vessel_id" invisible="is_vessel" required="not is_vessel"/>
+                <field name="imo_number" invisible="not is_vessel"/>
+                <field name="vessel_type" invisible="not is_vessel"/>
+                <field name="flag_country_id" invisible="not is_vessel"/>
+                <field name="analytic_account_id" invisible="not is_vessel"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="maintenance_equipment_view_list_maritime" model="ir.ui.view">
+        <field name="name">maintenance.equipment.list.maritime</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="is_vessel" optional="hide"/>
+                <field name="vessel_id" optional="show"/>
+                <field name="imo_number" optional="show"/>
+                <field name="vessel_type" optional="show"/>
+                <field name="flag_country_id" optional="show"/>
+                <field name="category_id" optional="show"/>
+                <field name="model" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="maintenance_equipment_vessel_action" model="ir.actions.act_window">
+        <field name="name">Vessels</field>
+        <field name="res_model">maintenance.equipment</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('is_vessel', '=', True)]</field>
+        <field name="context">{'default_is_vessel': True, 'default_vessel_type': 'bulk'}</field>
+    </record>
+
+    <record id="maintenance_equipment_machinery_action" model="ir.actions.act_window">
+        <field name="name">Machinery</field>
+        <field name="res_model">maintenance.equipment</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('is_vessel', '=', False)]</field>
+        <field name="context">{'default_is_vessel': False}</field>
+    </record>
+
+    <record id="maintenance_equipment_view_form_stock" model="ir.ui.view">
+        <field name="name">maintenance.equipment.form.stock</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance_equipment_view_form_maritime"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='analytic_account_id']" position="after">
+                <field name="stock_location_id" invisible="not is_vessel"
+                       groups="stock.group_stock_user"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
